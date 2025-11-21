@@ -1,34 +1,35 @@
-# Budget Tracker
+# 🧾 Budget Tracker — CS50P Project
 
-**A Python-based personal finance tracker to manage income and expenses.**
+> 🎓 **This project was created as part of the _CS50’s Introduction to Programming with Python_ course.**  
 
-## Overview
+A simple, interactive **command-line Budget Tracker** written in Python that allows users to record income and expenses, view summaries, manage transactions, and export data to CSV. This version is lightweight and dependency-free, making it easy to run on any system with Python installed.  
 
-**Budget Tracker** is a command-line Python application designed to help users monitor their finances. It allows you to add transactions, categorize them, generate detailed reports, edit or delete entries, and export your data to CSV for further analysis.
-
----
-
-## Features
-
-- **Add Transactions:** Record income or expenses with amount, category, and date.  
-- **Suggested Categories:** Quickly choose from common categories or create custom ones.  
-- **Generate Reports:** See totals for income and expenses, separated by category.  
-- **Filter Transactions:** Filter by date range or category.  
-- **Manage Transactions:** Edit or delete existing records.  
-- **Export Data:** Export transactions to a CSV file for external use.  
+![Screenshot of the project](./screenshot1.png)  (./screenshot2.png)  (./screenshot3.png)
 
 ---
 
-## Technologies
+## 📌 Features
+
+- ➕ Add transactions (income or expenses)  
+- 🗂️ Automatic category suggestions  
+- 📝 View all transactions  
+- 📊 Calculate totals for income and expenses  
+- 🧹 Delete transactions  
+- 💾 Save all data to CSV so your budget persists  
+- 🖥️ No external libraries required — runs anywhere  
+
+---
+
+## 🛠️ Technologies Used
 
 - Python 3  
-- SQLite for database storage  
-- Tabulate for formatted tables in the terminal  
+- CSV for data storage (no database required)  
 
 ---
 
-## Installation
+## ▶️ How to Run
 
-1. Clone this repository:  
+1. Clone the repository:  
    ```bash
-   git clone https://github.com/your-username/budget-tracker.git
+   git clone https://github.com/your-username/budget-tracker-cs50p.git
+

@@ -31,4 +31,4 @@ A simple, interactive command-line **Budget Tracker** written in Python that all
 
 
 👩‍💻 Author: Nataliia Gvozdovska – Web Developer & Designer  
-Created on: November 21, 2025
+Created on: February, 2025

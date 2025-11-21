@@ -1,9 +1,26 @@
 import sqlite3
 import csv
 from datetime import datetime
-from tabulate import tabulate
 
 DB_FILE = "transactions.db"
+
+
+def print_table(rows, headers):
+    col_widths = [len(header) for header in headers]
+
+    for row in rows:
+        for i, cell in enumerate(row):
+            col_widths[i] = max(col_widths[i], len(str(cell)))
+
+    header_row = " | ".join(header.ljust(col_widths[i]) for i, header in enumerate(headers))
+    separator = "-+-".join("-" * col_widths[i] for i in range(len(headers)))
+
+    print(header_row)
+    print(separator)
+
+    for row in rows:
+        print(" | ".join(str(cell).ljust(col_widths[i]) for i, cell in enumerate(row)))
+
 
 def main():
     _init_db()
@@ -32,7 +49,6 @@ def main():
             print("Invalid choice. Please try again.")
 
 def _init_db():
-    """Initialize SQLite database."""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute("""
@@ -58,7 +74,6 @@ def get_valid_date(prompt="Enter date (YYYY-MM-DD) or press Enter for today: "):
             print("Invalid date format. Please use YYYY-MM-DD.")
 
 def add_transaction():
-    """Add a new transaction (income or expense) to the database."""
     print("\n=== Add Transaction ===")
     while True:
         try:
@@ -67,7 +82,6 @@ def add_transaction():
         except ValueError:
             print("Invalid amount. Please enter a number.")
 
-    # Suggested categories
     if amount >= 0:
         categories = ["Salary", "Bonus", "Gift", "Other Income"]
     else:
@@ -95,16 +109,13 @@ def add_transaction():
 
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO transactions (date, amount, category) VALUES (?, ?, ?)",
-        (date, amount, category)
-    )
+    cursor.execute("INSERT INTO transactions (date, amount, category) VALUES (?, ?, ?)",
+                (date, amount, category))
     conn.commit()
     conn.close()
     print("Transaction added successfully!")
 
 def generate_report():
-    """Generate a summary report of transactions, separated into Income and Expenses."""
     print("\n=== Generate Report ===")
     start_date = input("Enter start date (YYYY-MM-DD) or press Enter to skip: ").strip()
     end_date = input("Enter end date (YYYY-MM-DD) or press Enter to skip: ").strip()
@@ -150,21 +161,17 @@ def generate_report():
 
     print("\n=== Income ===")
     if income_totals:
-        table = [[cat, total] for cat, total in income_totals.items()]
-        table.sort(key=sort_key)
-        table = [[cat, f"${total:.2f}"] for cat, total in table]
-        table.append(["Total Income", f"${total_income:.2f}"])
-        print(tabulate(table, headers=["Category", "Amount"], tablefmt="grid"))
+        rows = sorted([[cat, f"${total:.2f}"] for cat, total in income_totals.items()], key=lambda x: x[0])
+        rows.append(["Total Income", f"${total_income:.2f}"])
+        print_table(rows, ["Category", "Amount"])
     else:
         print("No income transactions found.")
 
     print("\n=== Expenses ===")
     if expense_totals:
-        table = [[cat, total] for cat, total in expense_totals.items()]
-        table.sort(key=sort_key)
-        table = [[cat, f"${total:.2f}"] for cat, total in table]
-        table.append(["Total Expenses", f"${total_expense:.2f}"])
-        print(tabulate(table, headers=["Category", "Amount"], tablefmt="grid"))
+        rows = sorted([[cat, f"${total:.2f}"] for cat, total in expense_totals.items()], key=lambda x: x[0])
+        rows.append(["Total Expenses", f"${total_expense:.2f}"])
+        print_table(rows, ["Category", "Amount"])
     else:
         print("No expense transactions found.")
 
@@ -172,7 +179,6 @@ def generate_report():
     input("\nPress Enter to continue...")
 
 def manage_transactions():
-    """View, edit, or delete transactions."""
     print("\n=== Manage Transactions ===")
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
@@ -208,7 +214,6 @@ def manage_transactions():
         print("Invalid action. Returning to menu.")
 
 def edit_transaction(transaction_id):
-    """Edit a selected transaction."""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute("SELECT date, amount, category FROM transactions WHERE id = ?", (transaction_id,))
@@ -254,16 +259,13 @@ def edit_transaction(transaction_id):
                     break
         print("Invalid choice. Please try again.")
 
-    cursor.execute(
-        "UPDATE transactions SET date = ?, amount = ?, category = ? WHERE id = ?",
-        (new_date, new_amount, new_category, transaction_id)
-    )
+    cursor.execute("UPDATE transactions SET date = ?, amount = ?, category = ? WHERE id = ?",
+                (new_date, new_amount, new_category, transaction_id))
     conn.commit()
     conn.close()
     print("Transaction updated successfully!")
 
 def delete_transaction(transaction_id):
-    """Delete a selected transaction."""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM transactions WHERE id = ?", (transaction_id,))
@@ -272,7 +274,6 @@ def delete_transaction(transaction_id):
     print("Transaction deleted successfully!")
 
 def export_to_csv():
-    """Export transactions to CSV with Income/Expense separation."""
     print("\n=== Export Transactions to CSV ===")
     start_date = input("Enter start date (YYYY-MM-DD) or press Enter to skip: ").strip()
     end_date = input("Enter end date (YYYY-MM-DD) or press Enter to skip: ").strip()
@@ -308,8 +309,6 @@ def export_to_csv():
     total_expense = 0
 
     for date, amount, category in transactions:
-        if not category.strip():
-            category = "Uncategorized"
         if amount >= 0:
             income_totals[category] = income_totals.get(category, 0) + amount
             total_income += amount
